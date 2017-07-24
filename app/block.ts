@@ -16,7 +16,8 @@ class Block {
   }
 
   static rotateClockwise(block: Block) {
-    const rotatedGeometry = _.zip(...(block.geometry).reverse());
+    const reversedGeometry = _.clone(block.geometry).reverse();
+    const rotatedGeometry = _.zip(...reversedGeometry);
     return new Block(rotatedGeometry);
   }
 

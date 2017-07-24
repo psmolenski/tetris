@@ -1,168 +1,134 @@
-import {Block} from './block';
 import {BlockProducer} from "./block-producer";
-import {Position} from "./position";
 import {Board} from "./board";
 import {Renderer} from "./renderer";
 import {Controller} from "./controller";
 import {Command} from "./command";
+import {GameState} from "./game-state";
+import {throttle} from "./decorators";
 
 class Game {
   private readonly blockProducer: BlockProducer;
   private readonly renderer: Renderer;
   private readonly controller: Controller;
-  private activeBlock: Block;
-  private activeBlockPosition: Position;
-  private activeBlockSpeed: number;
-  private board: Board;
+  private _state: GameState;
 
   constructor(configuration: GameConfiguration) {
     this.blockProducer = configuration.blockProducer;
     this.renderer = configuration.renderer;
     this.controller = configuration.controller;
+    this.state = this.createInitialState();
+  }
+
+  get state() : GameState {
+    return this._state;
+  }
+
+  set state(newState: GameState) {
+    if (this._state === newState) {
+      return;
+    }
+
+    this._state = newState;
+    this.render();
+  }
+
+  createInitialState() {
+    const board = this.createBoard();
+    const firstBlock = this.blockProducer.getNextBlock();
+
+    return GameState.createInitialState(firstBlock, board);
   }
 
   start() {
     this.init();
     this.gameStateLoop();
-    this.renderingLoop();
   }
 
   init() {
     this.controller.getCommandStream()
       .filter(command => command === Command.MoveLeft)
       .subscribe(() => {
-        if (this.canMoveActiveBlockLeft()) {
-          this.moveActiveBlockLeft();
+        if (this.state.canMoveActiveBlockLeft()) {
+          this.state = this.state.moveActiveBlockLeft();
         }
       });
 
     this.controller.getCommandStream()
       .filter(command => command === Command.MoveRight)
       .subscribe(() => {
-        if (this.canMoveActiveBlockRight()) {
-          this.moveActiveBlockRight();
+        if (this.state.canMoveActiveBlockRight()) {
+          this.state = this.state.moveActiveBlockRight();
         }
       });
 
     this.controller.getCommandStream()
       .filter(command => command === Command.Drop)
       .subscribe(() => {
-        this.dropActiveBlock();
+        this.state = this.state.dropActiveBlock();
       });
 
     this.controller.getCommandStream()
       .filter(command => command === Command.RotateClockwise)
       .subscribe(() => {
-        if (this.canRotateActiveBlock()) {
-          this.rotateActiveBlock();
+        if (this.state.canRotateActiveBlock()) {
+          this.state = this.state.rotateActiveBlock();
         }
       });
 
-    this.createNewBoard();
-    this.addBlock();
   }
 
-  createNewBoard() {
-    this.board = new Board(this.renderer.getViewportWidth(), this.renderer.getViewportHeight());
+  createBoard() {
+    return Board.createBoardWithSize(this.renderer.getViewportWidth(), this.renderer.getViewportHeight());
   }
 
   gameStateLoop() {
     setTimeout(() => {
       this.updateGameState();
       this.gameStateLoop();
-    }, this.activeBlockSpeed);
+    }, this.state.activeBlock.speed);
   }
 
-  renderingLoop() {
+  @throttle(16)
+  render() : void {
     requestAnimationFrame(() => {
-      this.render();
-      this.renderingLoop();
+      this.renderer.render(this.state);
     });
   }
 
-  render() {
-    this.renderer.render(this.activeBlock, this.activeBlockPosition, this.board);
-  }
-
   updateGameState() {
-    if (this.canMoveActiveBlockDown()) {
-      this.moveActiveBlockDown();
+    if (this.state.canMoveActiveBlockDown()) {
+      this.state = this.state.moveActiveBlockDown();
       return;
     }
 
     this.addActiveBlockToBoard();
     this.removeFullRowsFromBoard();
-    this.addBlock();
-  }
 
-  canMoveActiveBlockDown() {
-    const newPosition = Position.moveDown(this.activeBlockPosition);
+    if (this.state.board.isFull()) {
+      this.clearBoard();
+    }
 
-    return this.board.isBlockFullyOnBoard(this.activeBlock, newPosition) && !this.board.isBlockColiding(this.activeBlock, newPosition);
-  }
-
-  moveActiveBlockDown() {
-    this.activeBlockPosition = Position.moveDown(this.activeBlockPosition);
-  }
-
-  canMoveActiveBlockRight() {
-    const newPosition = Position.moveRight(this.activeBlockPosition);
-
-    return this.board.isBlockFullyOnBoard(this.activeBlock, newPosition) && !this.board.isBlockColiding(this.activeBlock, newPosition);
-  }
-
-  moveActiveBlockRight() {
-    this.activeBlockPosition = Position.moveRight(this.activeBlockPosition);
-  }
-
-  canMoveActiveBlockLeft() : Boolean {
-    const newPosition = Position.moveLeft(this.activeBlockPosition);
-
-    return this.board.isBlockFullyOnBoard(this.activeBlock, newPosition) && !this.board.isBlockColiding(this.activeBlock, newPosition);
-  }
-
-  moveActiveBlockLeft() {
-    this.activeBlockPosition = Position.moveLeft(this.activeBlockPosition);
-  }
-
-  dropActiveBlock() {
-    this.activeBlockSpeed = 16;
-  }
-
-  canRotateActiveBlock() {
-    const rotatedBlock = Block.rotateClockwise(this.activeBlock);
-
-    return this.board.isBlockFullyOnBoard(rotatedBlock, this.activeBlockPosition) && !this.board.isBlockColiding(rotatedBlock, this.activeBlockPosition)
-  }
-
-  rotateActiveBlock() {
-    this.activeBlock = Block.rotateClockwise(this.activeBlock);
-  }
-
-  addBlock() {
-    this.activeBlock = this.blockProducer.getNextBlock();
-    this.activeBlockPosition = this.getStartPositionForBlock(this.activeBlock);
-    this.activeBlockSpeed = 200;
+    this.addNewActiveBlock();
   }
 
   addActiveBlockToBoard() {
-    this.board.addBlock(this.activeBlock, this.activeBlockPosition);
-
-    if (this.board.isFull()) {
-      this.createNewBoard();
-    }
+    this.state = this.state.addActiveBlockToBoard();
   }
 
-  getStartPositionForBlock(block: Block) : Position {
-    const x = Math.floor((this.board.width - block.width) / 2);
-    const y = 0;
-
-    return new Position(x, y);
+  addNewActiveBlock() {
+    const newBlock = this.blockProducer.getNextBlock();
+    this.state = this.state.addNewActiveBlock(newBlock);
   }
 
   removeFullRowsFromBoard() {
-    this.board.removeFullRows();
+    this.state = this.state.removeFullRowsFromBoard();
   }
+
+  clearBoard() {
+    this.state = this.state.clearBoard();
+  }
+
+
 }
 
 interface GameConfiguration {

@@ -1,9 +1,11 @@
 import {Block} from "./block";
 import {Position} from "./position";
 import {Board} from "./board";
+import {Color} from "./color";
+import {GameState} from "./game-state";
 
 interface Renderer {
-  render(block: Block, blockPosition: Position, board: Board) : void;
+  render(gameState: GameState) : void;
   getViewportWidth() : number;
   getViewportHeight() : number;
 }
@@ -38,14 +40,15 @@ class CanvasRenderer implements Renderer{
     return this.viewportHeight;
   }
 
-  render(block: Block, blockPosition: Position, board: Board) {
+  render(gameState: GameState) {
     this.clearCanvas();
-    this.blockRenderer.render(block, blockPosition);
-    this.boardRenderer.render(board);
+    this.blockRenderer.render(gameState.activeBlock.block, gameState.finalActiveBlockPosition, Color.ACTIVE_BLOCK_PROJECTION);
+    this.blockRenderer.render(gameState.activeBlock.block, gameState.activeBlock.position, Color.ACTIVE_BLOCK);
+    this.boardRenderer.render(gameState.board, Color.BOARD_BLOCK);
   }
 
   clearCanvas() {
-    this.graphicContext.fillStyle = '#000';
+    this.graphicContext.fillStyle = Color.BOARD;
     this.graphicContext.fillRect(0, 0, 30, 50);
   }
 }
@@ -57,8 +60,8 @@ class BlockRenderer {
     this.graphicContext = <CanvasRenderingContext2D> canvas.getContext('2d');
   }
 
-  render(block: Block, blockPosition: Position) {
-    this.graphicContext.fillStyle = '#f00';
+  render(block: Block, blockPosition: Position, color: Color) {
+    this.graphicContext.fillStyle = color;
 
     block.geometry.forEach((row, y) => {
       row.forEach((pixel, x) => {
@@ -77,8 +80,8 @@ class BoardRenderer {
     this.graphicContext = <CanvasRenderingContext2D> canvas.getContext('2d');
   }
 
-  render(board: Board) {
-    this.graphicContext.fillStyle = '#0f0';
+  render(board: Board, color: Color) {
+    this.graphicContext.fillStyle = color;
 
     board.geometry.forEach((row, y) => {
       row.forEach((pixel, x) => {

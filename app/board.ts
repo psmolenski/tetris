@@ -3,13 +3,19 @@ import {Position} from "./position";
 import * as _ from "lodash";
 
 class Board {
-  public geometry: number[][];
+  constructor(public geometry: number[][]) {}
 
-  constructor(public readonly width: number, public readonly height: number) {
-    this.geometry = this.createEmptyGeometry(width, height);
+  get width() : number {
+    return this.geometry[0].length;
   }
 
-  addBlock(block: Block, position: Position) {
+  get height() : number {
+    return this.geometry.length;
+  }
+
+  addBlock(block: Block, position: Position) : Board {
+    const newGeometry = _.cloneDeep(this.geometry);
+
     _.times(block.height, blockRowIndex => {
       const boardRowIndex = position.y + blockRowIndex;
       _.times(block.width, blockColIndex => {
@@ -20,10 +26,12 @@ class Board {
           return;
         }
 
-        const boardPixel = this.geometry[boardRowIndex][boardColIndex];
-        this.geometry[boardRowIndex][boardColIndex] = boardPixel || blockPixel;
-      })
-    })
+        const boardPixel = newGeometry[boardRowIndex][boardColIndex];
+        newGeometry[boardRowIndex][boardColIndex] = boardPixel || blockPixel;
+      });
+    });
+
+    return new Board(newGeometry);
   }
 
   isBlockFullyOnBoard(block: Block, position: Position) {
@@ -104,17 +112,24 @@ class Board {
     return this.geometry[0].some(pixel => pixel === 1);
   }
 
-  removeFullRows() {
-    const geometryWithoutFullRows = this.geometry.filter(row => row.some(pixel => pixel === 0));
+  removeFullRows() : Board {
+    const geometryWithoutFullRows = _.cloneDeep(this.geometry).filter(row => row.some(pixel => pixel === 0));
     const numberOfRemovedRows = this.height - geometryWithoutFullRows.length;
-    const newRows = this.createEmptyGeometry(this.width, numberOfRemovedRows);
+    const newRows = createEmptyGeometry(this.width, numberOfRemovedRows);
+    const newGeometry = [...newRows, ...geometryWithoutFullRows];
 
-    this.geometry = [...newRows, ...geometryWithoutFullRows];
+    return new Board(newGeometry);
   }
 
-  createEmptyGeometry(width: number, height: number) : number[][] {
-    return Array(height).fill(0).map(() => Array(width).fill(0));
+  static createBoardWithSize(width: number, height: number) {
+    const geometry = createEmptyGeometry(width, height);
+
+    return new Board(geometry);
   }
+}
+
+function createEmptyGeometry(width: number, height: number) : number[][] {
+  return Array(height).fill(0).map(() => Array(width).fill(0));
 }
 
 export {Board};
