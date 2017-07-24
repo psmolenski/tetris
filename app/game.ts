@@ -4,7 +4,6 @@ import {Renderer} from "./renderer";
 import {Controller} from "./controller";
 import {Command} from "./command";
 import {GameState} from "./game-state";
-import {throttle} from "./decorators";
 
 class Game {
   private readonly blockProducer: BlockProducer;
@@ -88,11 +87,8 @@ class Game {
     }, this.state.activeBlock.speed);
   }
 
-  @throttle(16)
   render() : void {
-    requestAnimationFrame(() => {
-      this.renderer.render(this.state);
-    });
+    this.renderer.render(this.state);
   }
 
   updateGameState() {

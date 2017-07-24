@@ -18,6 +18,7 @@ class CanvasRenderer implements Renderer{
   private readonly boardRenderer: BoardRenderer;
   private readonly viewportWidth: number;
   private readonly viewportHeight: number;
+  private scheduledRenderHandle : number | null;
 
 
   constructor(canvas: HTMLCanvasElement) {
@@ -41,10 +42,19 @@ class CanvasRenderer implements Renderer{
   }
 
   render(gameState: GameState) {
-    this.clearCanvas();
-    this.blockRenderer.render(gameState.activeBlock.block, gameState.finalActiveBlockPosition, Color.ACTIVE_BLOCK_PROJECTION);
-    this.blockRenderer.render(gameState.activeBlock.block, gameState.activeBlock.position, Color.ACTIVE_BLOCK);
-    this.boardRenderer.render(gameState.board, Color.BOARD_BLOCK);
+    if (this.scheduledRenderHandle !== null) {
+      cancelAnimationFrame(this.scheduledRenderHandle);
+    }
+
+    this.scheduledRenderHandle = requestAnimationFrame(() => {
+      this.clearCanvas();
+      this.blockRenderer.render(gameState.activeBlock.block, gameState.finalActiveBlockPosition, Color.ACTIVE_BLOCK_PROJECTION);
+      this.blockRenderer.render(gameState.activeBlock.block, gameState.activeBlock.position, Color.ACTIVE_BLOCK);
+      this.boardRenderer.render(gameState.board, Color.BOARD_BLOCK);
+
+      this.scheduledRenderHandle = null;
+    });
+
   }
 
   clearCanvas() {
