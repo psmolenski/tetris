@@ -1,5 +1,4 @@
 import {BlockProducer} from "./block-producer";
-import {Board} from "./board";
 import {Renderer} from "./renderer";
 import {Controller} from "./controller";
 import {Command} from "./command";
@@ -32,10 +31,11 @@ class Game {
   }
 
   createInitialState() {
-    const board = this.createBoard();
+    const boardWidth = this.renderer.getViewportWidth();
+    const boardHeight = this.renderer.getViewportHeight();
     const firstBlock = this.blockProducer.getNextBlock();
 
-    return GameState.createInitialState(firstBlock, board);
+    return GameState.createInitialState(firstBlock, boardWidth, boardHeight);
   }
 
   start() {
@@ -76,10 +76,6 @@ class Game {
 
   }
 
-  createBoard() {
-    return Board.createBoardWithSize(this.renderer.getViewportWidth(), this.renderer.getViewportHeight());
-  }
-
   gameStateLoop() {
     setTimeout(() => {
       this.updateGameState();
@@ -87,7 +83,7 @@ class Game {
     }, this.state.activeBlock.speed);
   }
 
-  render() : void {
+  render() {
     this.renderer.render(this.state);
   }
 
@@ -123,7 +119,6 @@ class Game {
   clearBoard() {
     this.state = this.state.clearBoard();
   }
-
 
 }
 

@@ -4,9 +4,24 @@ import {Block} from "./block";
 import {Position} from "./position";
 
 class GameState {
-  constructor(public readonly activeBlock: ActiveBlock,
-              public readonly finalActiveBlockPosition: Position,
-              public readonly board: Board) {
+  public readonly activeBlock: ActiveBlock;
+  public readonly board: Board;
+  public readonly finalActiveBlockPosition: Position;
+
+  constructor(block: ActiveBlock | Block, board: Board, finalActiveBlockPosition? : Position) {
+    this.board = board;
+
+    if (block instanceof ActiveBlock) {
+      this.activeBlock = block;
+    } else {
+      this.activeBlock = this.createNewActiveBlock(block);
+    }
+
+    if (finalActiveBlockPosition === undefined) {
+      this.finalActiveBlockPosition = this.getFinalPositionForBlock(this.activeBlock.block, this.activeBlock.position);
+    } else {
+      this.finalActiveBlockPosition = finalActiveBlockPosition;
+    }
   }
 
   canMoveActiveBlockDown() {
@@ -71,6 +86,10 @@ class GameState {
     return isBlockPositionAvailable(block, position, this.board);
   }
 
+  getFinalPositionForBlock(block: Block, position: Position) {
+    return getFinalPositionForBlock(block, position, this.board);
+  }
+
   addActiveBlockToBoard() {
     const board = this.board.addBlock(this.activeBlock.block, this.activeBlock.position);
 
@@ -83,12 +102,17 @@ class GameState {
     return this.updateBoard(board);
   }
 
-  addNewActiveBlock(newBlock: Block) {
-    const position = getStartPositionForBlock(newBlock, this.board);
+  createNewActiveBlock(block: Block) {
+    const position = getStartPositionForBlock(block, this.board);
     const speed = 200;
-    const activeBlock = new ActiveBlock(newBlock, position, speed);
 
-    return this.updateActiveBlock(activeBlock);
+    return new ActiveBlock(block, position, speed);
+  }
+
+  addNewActiveBlock(newBlock: Block) {
+    const newActiveBlock = this.createNewActiveBlock(newBlock);
+
+    return this.updateActiveBlock(newActiveBlock);
   }
 
   clearBoard() {
@@ -98,21 +122,18 @@ class GameState {
   }
 
   updateActiveBlock(newActiveBlock: ActiveBlock): GameState {
-    const newFinalActiveBlockPosition = getFinalPositionForBlock(newActiveBlock.block, newActiveBlock.position, this.board);
-    return new GameState(newActiveBlock, newFinalActiveBlockPosition, this.board);
+    const newFinalActiveBlockPosition = this.getFinalPositionForBlock(newActiveBlock.block, newActiveBlock.position);
+    return new GameState(newActiveBlock, this.board, newFinalActiveBlockPosition);
   }
 
   updateBoard(newBoard: Board) {
-    return new GameState(this.activeBlock, this.finalActiveBlockPosition, newBoard);
+    return new GameState(this.activeBlock, newBoard, this.finalActiveBlockPosition);
   }
 
-  static createInitialState(firstBlock: Block, board: Board): GameState {
-    const position = getStartPositionForBlock(firstBlock, board);
-    const finalPosition = getFinalPositionForBlock(firstBlock, position, board);
-    const speed = 200;
-    const activeBlock = new ActiveBlock(firstBlock, position, speed);
+  static createInitialState(firstBlock: Block, boardWidth: number, boardHeight: number): GameState {
+    const board = Board.createBoardWithSize(boardWidth, boardHeight);
 
-    return new GameState(activeBlock, finalPosition, board);
+    return new GameState(firstBlock, board);
   }
 
 }
