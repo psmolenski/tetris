@@ -64,13 +64,13 @@ class GameState {
   }
 
   canRotateActiveBlock() {
-    const rotatedBlock = Block.rotateClockwise(this.activeBlock.block);
+    const rotatedBlock = this.activeBlock.block.rotateClockwise();
 
     return this.isBlockPositionAvailable(rotatedBlock, this.activeBlock.position);
   }
 
   rotateActiveBlock() {
-    const block = Block.rotateClockwise(this.activeBlock.block);
+    const block = this.activeBlock.block.rotateClockwise();
     const activeBlock = this.activeBlock.updateBlock(block);
 
     return this.updateActiveBlock(activeBlock);
