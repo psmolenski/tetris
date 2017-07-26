@@ -1,11 +1,10 @@
-import Game from './game';
-import {RandomBlockProducer, SameBlockProducer} from "./block-producer";
-import {CanvasRenderer} from "./renderer";
-import {KeyboardController} from "./controller";
+import {GameBoardController} from './game-board/game-board.controller';
+import {NextBlockPreviewController} from "./next-block-preview/next-block-preview.controller";
+import {Game} from "./domain/game";
 
-const blockProducer = new RandomBlockProducer();
-// const blockProducer = new SameBlockProducer('I');
-const renderer = new CanvasRenderer(<HTMLCanvasElement> document.getElementById('gameCanvas'));
-const controller = new KeyboardController(document);
-const game = new Game({renderer, blockProducer, controller});
+const game = new Game(20, 35);
+const gameBoardCanvas = <HTMLCanvasElement> document.getElementById('gameCanvas');
+const gameBoardController = new GameBoardController(game, gameBoardCanvas);
+const nextBlockPreviewCanvas = <HTMLCanvasElement> document.getElementById('nextBlockPreviewCanvas');
+const nextBlockPreviewController = new NextBlockPreviewController(game, nextBlockPreviewCanvas);
 game.start();
