@@ -1,12 +1,16 @@
 import * as _ from "lodash";
+import {Color} from "../color";
+import {Pixel} from "./pixel";
 
 class Block {
-  public geometry: number[][];
-  private squareGeometry: number[][]; //square geometry is needed only for rotation. For everything else use geometry
+  public color: Color;
+  public geometry: Pixel[][];
+  private squareGeometry: Pixel[][]; //square geometry is needed only for rotation. For everything else use geometry
 
-  constructor(squareGeometry: number[][]) {
+  constructor(squareGeometry: Pixel[][], color: Color) {
     this.squareGeometry = squareGeometry;
-    this.geometry = this.removeEmptyRowsAndColumns(squareGeometry);
+    this.geometry = this.removeEmptyRowsAndColumns(this.squareGeometry);
+    this.color = color;
   }
 
   get height() {
@@ -20,58 +24,62 @@ class Block {
   rotateClockwise() {
     const reversedGeometry = _.clone(this.squareGeometry).reverse();
     const rotatedGeometry = _.zip(...reversedGeometry);
-    return new Block(rotatedGeometry);
+    return new Block(rotatedGeometry, this.color);
   }
 
-  private removeEmptyRowsAndColumns(geometry: number[][]) : number[][] {
-    const geometryWithoutEmptyRows = geometry.filter(row => row.some(pixel => pixel === 1));
-    const geometryWithoutEmptyColumns = _.zip(...geometryWithoutEmptyRows).filter(col => col.some(pixel => pixel === 1));
+  private removeEmptyRowsAndColumns(geometry: Pixel[][]) : Pixel[][] {
+    const geometryWithoutEmptyRows = geometry.filter(row => row.some(pixel => pixel.isFilled()));
+    const geometryWithoutEmptyColumns = _.zip(...geometryWithoutEmptyRows).filter(col => col.some(pixel => pixel.isFilled()));
 
     return _.unzip(geometryWithoutEmptyColumns);
   }
 
-  static createBlockOfType(type: string) {
-    return new Block(BlockGeometries[type]);
+  static createBlockOfType(type: string, color: Color) {
+    return new Block(BlockGeometries[type], color);
+  }
+
+  static convertNumbersToPixels(geometry: number[][]) {
+    return geometry.map(row => row.map(pixel => new Pixel(Color.BLOCK_1, pixel === 1)));
   }
 
 }
 
-const BlockGeometries : {[name: string]: number[][]} = {
-  T: [
+const BlockGeometries : {[name: string]: Pixel[][]} = {
+  T: Block.convertNumbersToPixels([
     [0, 1, 0],
     [1, 1, 1],
     [0, 0, 0]
-  ],
-  I: [
+  ]),
+  I: Block.convertNumbersToPixels([
     [0, 1, 0],
     [0, 1, 0],
     [0, 1, 0],
     [0, 1, 0]
-  ],
-  J: [
+  ]),
+  J: Block.convertNumbersToPixels([
     [0, 1, 0],
     [0, 1, 0],
     [1, 1, 0]
-  ],
-  L: [
+  ]),
+  L: Block.convertNumbersToPixels([
     [1, 0, 0],
     [1, 0, 0],
     [1, 1, 0]
-  ],
-  O: [
+  ]),
+  O: Block.convertNumbersToPixels([
     [1, 1],
     [1, 1]
-  ],
-  Z: [
+  ]),
+  Z: Block.convertNumbersToPixels([
     [1, 1, 0],
     [0, 1, 1],
     [0, 0, 0]
-  ],
-  S: [
+  ]),
+  S: Block.convertNumbersToPixels([
     [0, 1, 1],
     [1, 1, 0],
     [0, 0, 0]
-  ]
+  ])
 };
 
 

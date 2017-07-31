@@ -26,8 +26,8 @@ class GameBoardRenderer {
     this.scheduledRenderHandle = requestAnimationFrame(() => {
       this.clearCanvas();
       this.blockRenderer.render(gameState.activeBlock.block, gameState.finalActiveBlockPosition, Color.ACTIVE_BLOCK_PROJECTION);
-      this.blockRenderer.render(gameState.activeBlock.block, gameState.activeBlock.position, Color.ACTIVE_BLOCK);
-      this.boardRenderer.render(gameState.board, Color.BOARD_BLOCK);
+      this.blockRenderer.render(gameState.activeBlock.block, gameState.activeBlock.position, gameState.activeBlock.block.color);
+      this.boardRenderer.render(gameState.board);
 
       this.scheduledRenderHandle = null;
     });
@@ -45,10 +45,13 @@ class BlockRenderer {
 
   render(block: Block, blockPosition: Position, color: Color) {
     this.canvas.fillStyle = color;
+    this.canvas.strokeStyle = Color.BOARD;
+    this.canvas.lineWidth = 0.1;
 
     block.geometry.forEach((row, y) => {
       row.forEach((pixel, x) => {
-        if (pixel) {
+        if (pixel.isFilled()) {
+          this.canvas.strokeRect(blockPosition.x + x, blockPosition.y + y, 1, 1);
           this.canvas.fillRect(blockPosition.x + x, blockPosition.y + y, 1, 1);
         }
       });
@@ -59,12 +62,15 @@ class BlockRenderer {
 class BoardRenderer {
   constructor(private readonly canvas: Canvas){}
 
-  render(board: Board, color: Color) {
-    this.canvas.fillStyle = color;
-
+  render(board: Board) {
     board.geometry.forEach((row, y) => {
       row.forEach((pixel, x) => {
-        if (pixel) {
+        if (pixel.isFilled()) {
+          this.canvas.fillStyle = pixel.color;
+          this.canvas.strokeStyle = Color.BOARD;
+          this.canvas.lineWidth = 0.1;
+
+          this.canvas.strokeRect(x, y, 1, 1);
           this.canvas.fillRect(x, y, 1, 1);
         }
       });

@@ -1,9 +1,11 @@
 import {Block} from "./block";
 import {Position} from "./position";
 import * as _ from "lodash";
+import {Color} from "../color";
+import {Pixel} from "./pixel";
 
 class Board {
-  constructor(public geometry: number[][]) {}
+  constructor(public geometry: Pixel[][]) {}
 
   get width() : number {
     return this.geometry[0].length;
@@ -22,12 +24,13 @@ class Board {
         const boardColIndex = position.x + blockColIndex;
         const blockPixel = block.geometry[blockRowIndex][blockColIndex];
 
-        if (blockPixel === 0) {
+        if (!blockPixel.isFilled()) {
           return;
         }
 
         const boardPixel = newGeometry[boardRowIndex][boardColIndex];
-        newGeometry[boardRowIndex][boardColIndex] = boardPixel || blockPixel;
+        boardPixel.color = block.color;
+        boardPixel.markAsFilled();
       });
     });
 
@@ -61,7 +64,7 @@ class Board {
     return block.geometry.some(row => {
       return _(row)
         .take(numberOfColumnsOutsideBoard)
-        .some((pixel:number) => pixel === 1);
+        .some((pixel:Pixel) => pixel.isFilled());
     });
 
   }
@@ -91,8 +94,8 @@ class Board {
 
     return _(block.geometry)
       .takeRight(numberOfRowsOutsideBoard)
-      .some((row: number[]) => {
-        return row.some((pixel: number) => pixel === 1);
+      .some((row: Pixel[]) => {
+        return row.some((pixel: Pixel) => pixel.isFilled());
       });
   }
 
@@ -105,15 +108,15 @@ class Board {
     const flatBlock = _.flatten(block.geometry);
     const flatBoardChunk = _.flatten(boardChunk);
 
-    return _.zip(flatBlock, flatBoardChunk).some(([blockPixel, boardPixel]) => blockPixel === 1 && boardPixel === 1);
+    return _.zip(flatBlock, flatBoardChunk).some(([blockPixel, boardPixel]) => blockPixel.isFilled() && boardPixel.isFilled());
   }
 
   isFull() {
-    return this.geometry[0].some(pixel => pixel === 1);
+    return this.geometry[0].some(pixel => pixel.isFilled());
   }
 
   removeFullRows() : Board {
-    const geometryWithoutFullRows = _.cloneDeep(this.geometry).filter(row => row.some(pixel => pixel === 0));
+    const geometryWithoutFullRows = _.cloneDeep(this.geometry).filter(row => row.some(pixel => !pixel.isFilled()));
     const numberOfRemovedRows = this.height - geometryWithoutFullRows.length;
     const newRows = createEmptyGeometry(this.width, numberOfRemovedRows);
     const newGeometry = [...newRows, ...geometryWithoutFullRows];
@@ -128,8 +131,8 @@ class Board {
   }
 }
 
-function createEmptyGeometry(width: number, height: number) : number[][] {
-  return Array(height).fill(0).map(() => Array(width).fill(0));
+function createEmptyGeometry(width: number, height: number) : Pixel[][] {
+  return _.range(height).map(() => _.range(width).map(() => new Pixel(Color.BOARD)));
 }
 
 export {Board};
