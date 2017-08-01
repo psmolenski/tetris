@@ -80,7 +80,7 @@ class Board {
     return block.geometry.some(row => {
       return _(row)
         .takeRight(numberOfColumnsOutsideBoard)
-        .some((pixel:number) => pixel === 1);
+        .some((pixel:Pixel) => pixel.isFilled());
     });
   }
 
