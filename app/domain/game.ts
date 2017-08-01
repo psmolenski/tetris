@@ -102,7 +102,13 @@ class Game {
   }
 
   private removeFullRowsFromBoard() {
-    this.state = this.state.removeFullRowsFromBoard();
+    const numberOfFullRows = this.state.board.getNumberOfFullRows();
+
+    if (numberOfFullRows === 0) {
+      return;
+    }
+
+    this.state = this.state.removeFullRowsFromBoard().addScores(numberOfFullRows);
   }
 
   private clearBoard() {

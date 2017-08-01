@@ -115,6 +115,10 @@ class Board {
     return this.geometry[0].some(pixel => pixel.isFilled());
   }
 
+  getNumberOfFullRows() : number {
+    return this.geometry.filter(row => row.every(pixel => pixel.isFilled())).length;
+  }
+
   removeFullRows() : Board {
     const geometryWithoutFullRows = _.cloneDeep(this.geometry).filter(row => row.some(pixel => !pixel.isFilled()));
     const numberOfRemovedRows = this.height - geometryWithoutFullRows.length;

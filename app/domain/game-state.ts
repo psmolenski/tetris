@@ -2,13 +2,15 @@ import {Board} from "./board";
 import {ActiveBlock} from "./active-block";
 import {Block} from "./block";
 import {Position} from "./position";
+import {Scores} from "./scores";
 
 class GameState {
   public readonly activeBlock: ActiveBlock;
   public readonly board: Board;
   public readonly finalActiveBlockPosition: Position;
+  public readonly scores: Scores;
 
-  constructor(block: ActiveBlock | Block, board: Board, finalActiveBlockPosition? : Position) {
+  constructor(block: ActiveBlock | Block, board: Board, finalActiveBlockPosition?: Position, scores?: Scores) {
     this.board = board;
 
     if (block instanceof ActiveBlock) {
@@ -21,6 +23,12 @@ class GameState {
       this.finalActiveBlockPosition = this.getFinalPositionForBlock(this.activeBlock.block, this.activeBlock.position);
     } else {
       this.finalActiveBlockPosition = finalActiveBlockPosition;
+    }
+
+    if (scores === undefined) {
+      this.scores = new Scores();
+    } else {
+      this.scores = scores;
     }
   }
 
@@ -121,13 +129,24 @@ class GameState {
     return this.updateBoard(board);
   }
 
+  addScores(numberOfRemovedRows: number) {
+    const numberOfRemovedPixels = numberOfRemovedRows * this.board.width;
+    const newScores = this.scores.add(numberOfRemovedPixels);
+
+    return this.updateScores(newScores);
+  }
+
   updateActiveBlock(newActiveBlock: ActiveBlock): GameState {
     const newFinalActiveBlockPosition = this.getFinalPositionForBlock(newActiveBlock.block, newActiveBlock.position);
-    return new GameState(newActiveBlock, this.board, newFinalActiveBlockPosition);
+    return new GameState(newActiveBlock, this.board, newFinalActiveBlockPosition, this.scores);
   }
 
   updateBoard(newBoard: Board) {
-    return new GameState(this.activeBlock, newBoard, this.finalActiveBlockPosition);
+    return new GameState(this.activeBlock, newBoard, this.finalActiveBlockPosition, this.scores);
+  }
+
+  updateScores(newScores: Scores): GameState {
+    return new GameState(this.activeBlock, this.board, this.finalActiveBlockPosition, newScores);
   }
 
   static createInitialState(firstBlock: Block, boardWidth: number, boardHeight: number): GameState {
