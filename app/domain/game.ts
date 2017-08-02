@@ -9,7 +9,7 @@ class Game {
 
   private stateSubject: Subject<GameState>;
 
-  constructor(boardWidth: number, boardHeight: number) {
+  constructor(public readonly boardWidth: number, public readonly boardHeight: number) {
     this.blockProducer = new RandomBlockProducer();
     this._state = this.createGameState(boardWidth, boardHeight);
     this.stateSubject = new BehaviorSubject(this._state);

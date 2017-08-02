@@ -2,6 +2,7 @@ import {CommandEmitter} from "../domain/command";
 import {GameBoardRenderer} from "./game-board.renderer";
 import {Game} from "../domain/game";
 import {KeyboardCommandEmitter} from "./keyboard-command-emitter";
+import {Pixel} from "../domain/pixel";
 
 class GameBoardController {
   private readonly game: Game;
@@ -10,6 +11,10 @@ class GameBoardController {
 
   constructor(game: Game, canvasElement: HTMLCanvasElement) {
     this.game = game;
+
+    canvasElement.width = this.game.boardWidth * Pixel.size;
+    canvasElement.height = this.game.boardHeight * Pixel.size;
+
     this.renderer = new GameBoardRenderer(canvasElement);
     this.commandEmitter = new KeyboardCommandEmitter();
 
