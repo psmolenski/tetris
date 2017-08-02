@@ -3,7 +3,7 @@ import {NextBlockPreviewController} from "./next-block-preview/next-block-previe
 import {Game} from "./domain/game";
 import {CurrentScoreController} from "./current-score/current-score.controller";
 
-const game = new Game(20, 35);
+const game = new Game(15, 24);
 
 const gameBoardCanvas = <HTMLCanvasElement> document.getElementById('gameCanvas');
 const gameBoardController = new GameBoardController(game, gameBoardCanvas);

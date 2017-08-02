@@ -1,8 +1,8 @@
 import {Color} from "../color";
 
-let size = 10;
+let size = 15;
 let strokeColor = Color.BOARD;
-let strokeWidth = 0.5;
+let strokeWidth = 0.7;
 
 class Pixel {
 
