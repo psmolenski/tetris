@@ -16,4 +16,13 @@ const nextBlockPreviewController = new NextBlockPreviewController(game, nextBloc
 const currentScoreElement = <HTMLDivElement> document.getElementById("currentScore");
 const currentScoreController = new CurrentScoreController(game, currentScoreElement);
 
-game.start();
+const gameStartBtn = <HTMLElement> document.getElementById("game-start-btn");
+const splashScreen = <HTMLElement> document.getElementById("splash-screen");
+const gameScreen = <HTMLElement> document.getElementById("game-screen");
+
+gameStartBtn.addEventListener("click", () => {
+  document.documentElement.webkitRequestFullScreen();
+  splashScreen.style.display = 'none';
+  gameScreen.style.display = 'block';
+  game.start();
+});

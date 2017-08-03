@@ -1,17 +1,5 @@
-body, html {
-  padding: 0;
-  margin: 0;
-}
-
-body {
-  background: #373737;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
+@foregroundColor: #f3f3f3;
+@backgroundColor: #373737;
 
 .main-container {
   display: flex;
@@ -25,18 +13,18 @@ body {
 }
 
 .game-board {
-  border: 1px solid #f3f3f3;
+  border: 1px solid @foregroundColor;
 }
 
 .current-score {
-  color: #f3f3f3;
+  color: @foregroundColor;
   font-family: monospace;
   font-size: 18px;
   text-align: right;
 }
 
 .next-block-container {
-  border: 1px solid #f3f3f3;
+  border: 1px solid @foregroundColor;
 }
 
 .controls-container {
@@ -69,11 +57,5 @@ body {
 
   &[command="RotateClockwise"] {
     background-image: url('../images/rotate.png');
-  }
-}
-
-@media (max-width: 360px) {
-  body {
-    justify-content: flex-start;
   }
 }
