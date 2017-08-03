@@ -1,0 +1,79 @@
+body, html {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: #373737;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 25px 0;
+}
+
+.game-board-container {
+  margin-right: 25px;
+}
+
+.game-board {
+  border: 1px solid #f3f3f3;
+}
+
+.current-score {
+  color: #f3f3f3;
+  font-family: monospace;
+  font-size: 18px;
+  text-align: right;
+}
+
+.next-block-container {
+  border: 1px solid #f3f3f3;
+}
+
+.controls-container {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  grid-template-rows: 40px;
+  grid-column-gap: 20px;
+  width: 100%;
+  max-width: 340px;
+}
+
+.control-btn {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &[command="MoveLeft"] {
+    background-image: url('../images/arrow.png');
+  }
+
+  &[command="MoveRight"] {
+    background-image: url('../images/arrow.png');
+    transform: rotate(180deg);
+  }
+
+  &[command="Drop"] {
+    background-image: url('../images/arrow.png');
+    transform: rotate(-90deg);
+  }
+
+  &[command="RotateClockwise"] {
+    background-image: url('../images/rotate.png');
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    justify-content: flex-start;
+  }
+}

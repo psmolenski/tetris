@@ -6,73 +6,6 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Tetris</title>
-    <style>
-        body, html {
-            padding: 0;
-            margin: 0;
-        }
-
-        body {
-            background: #373737;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .main-container {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            margin: 25px 0;
-        }
-
-        .game-board-container {
-            margin-right: 25px;
-        }
-
-        .game-board {
-            border: 1px solid #f3f3f3;
-        }
-
-        .current-score {
-            color: #f3f3f3;
-            font-family: monospace;
-            font-size: 18px;
-            text-align: right;
-        }
-
-        .next-block-container {
-            border: 1px solid #f3f3f3;
-        }
-
-        .controls-container {
-            display: grid;
-            grid-template-columns: auto auto auto auto;
-            grid-template-rows: 40px;
-            grid-column-gap: 20px;
-            width: 100%;
-            max-width: 340px;
-
-        }
-
-        .control-btn {
-            background: #f3f3f3;
-        }
-
-        @media (max-width: 360px) {
-          body {
-              justify-content: flex-start;
-          }
-
-          .control-btn {
-
-          }
-        }
-
-    </style>
 </head>
 <body>
     <div class="main-container">
@@ -89,10 +22,10 @@
         </div>
     </div>
     <div class="controls-container">
-        <div class="control-btn" command="MoveLeft">left</div>
-        <div class="control-btn" command="RotateClockwise">rotate</div>
-        <div class="control-btn" command="Drop">drop</div>
-        <div class="control-btn" command="MoveRight">right</div>
+        <div class="control-btn" command="MoveLeft"></div>
+        <div class="control-btn" command="RotateClockwise"></div>
+        <div class="control-btn" command="Drop"></div>
+        <div class="control-btn" command="MoveRight"></div>
     </div>
 </body>
 </html>

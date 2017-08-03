@@ -3,6 +3,8 @@ import {NextBlockPreviewController} from "./next-block-preview/next-block-previe
 import {Game} from "./domain/game";
 import {CurrentScoreController} from "./current-score/current-score.controller";
 
+import './styles/main.less';
+
 const game = new Game(15, 24);
 
 const gameBoardCanvas = <HTMLCanvasElement> document.getElementById('gameCanvas');
