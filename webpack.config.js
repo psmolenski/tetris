@@ -23,6 +23,13 @@ module.exports = {
         loader: 'source-map-loader'
       },
       {
+        test: /\.html$/,
+        loader: "html-loader",
+        options: {
+          exportAsEs6Default: true
+        }
+      },
+      {
         test: /\.less$/,
         use: [{
           loader: "style-loader" // creates style nodes from JS strings
@@ -40,7 +47,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'app/index.html'
+      template: 'app/index.html',
+      hash: true
     })
   ],
   devtool: 'source-map'

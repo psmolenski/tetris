@@ -1,28 +1,12 @@
-import {GameBoardController} from './game-board/game-board.controller';
-import {NextBlockPreviewController} from "./next-block-preview/next-block-preview.controller";
-import {Game} from "./domain/game";
-import {CurrentScoreController} from "./current-score/current-score.controller";
+import {router} from "./ui/router";
 
 import './styles/main.less';
+import {SplashScreenController} from "./views/splash-screen/splash-screen.controller";
+import {GameScreenController} from "./views/game-screen/game-screen.controller";
+import {GameEndScreenController} from "./views/game-end-screen/game-end-screen.controller";
 
-const game = new Game(15, 24);
+router.addView('splash-screen', SplashScreenController);
+router.addView('game-screen', GameScreenController);
+router.addView('game-end-screen', GameEndScreenController);
 
-const gameBoardCanvas = <HTMLCanvasElement> document.getElementById('gameCanvas');
-const gameBoardController = new GameBoardController(game, gameBoardCanvas);
-
-const nextBlockPreviewCanvas = <HTMLCanvasElement> document.getElementById('nextBlockPreviewCanvas');
-const nextBlockPreviewController = new NextBlockPreviewController(game, nextBlockPreviewCanvas);
-
-const currentScoreElement = <HTMLDivElement> document.getElementById("currentScore");
-const currentScoreController = new CurrentScoreController(game, currentScoreElement);
-
-const gameStartBtn = <HTMLElement> document.getElementById("game-start-btn");
-const splashScreen = <HTMLElement> document.getElementById("splash-screen");
-const gameScreen = <HTMLElement> document.getElementById("game-screen");
-
-gameStartBtn.addEventListener("click", () => {
-  document.documentElement.webkitRequestFullScreen();
-  splashScreen.style.display = 'none';
-  gameScreen.style.display = 'block';
-  game.start();
-});
+router.go('splash-screen');

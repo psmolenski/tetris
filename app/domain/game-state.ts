@@ -9,8 +9,9 @@ class GameState {
   public readonly board: Board;
   public readonly finalActiveBlockPosition: Position;
   public readonly scores: Scores;
+  public readonly isEnded: boolean;
 
-  constructor(block: ActiveBlock | Block, board: Board, finalActiveBlockPosition?: Position, scores?: Scores) {
+  constructor(block: ActiveBlock | Block, board: Board, finalActiveBlockPosition?: Position, scores?: Scores, isEnded?: boolean) {
     this.board = board;
 
     if (block instanceof ActiveBlock) {
@@ -29,6 +30,12 @@ class GameState {
       this.scores = new Scores();
     } else {
       this.scores = scores;
+    }
+
+    if (isEnded === undefined) {
+      this.isEnded = false;
+    } else {
+      this.isEnded = isEnded;
     }
   }
 
@@ -147,6 +154,10 @@ class GameState {
 
   updateScores(newScores: Scores): GameState {
     return new GameState(this.activeBlock, this.board, this.finalActiveBlockPosition, newScores);
+  }
+
+  endGame() {
+    return new GameState(this.activeBlock, this.board, this.finalActiveBlockPosition, this.scores, true);
   }
 
   static createInitialState(firstBlock: Block, boardWidth: number, boardHeight: number): GameState {

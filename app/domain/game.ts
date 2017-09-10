@@ -8,6 +8,7 @@ class Game {
   private _state: GameState;
 
   private stateSubject: Subject<GameState>;
+  private nextStateUpdateHandle: number;
 
   constructor(public readonly boardWidth: number, public readonly boardHeight: number) {
     this.blockProducer = new RandomBlockProducer();
@@ -30,6 +31,15 @@ class Game {
 
   start() {
     this.gameStateLoop();
+  }
+
+  stop() {
+    clearTimeout(this.nextStateUpdateHandle);
+    this.state = this.state.endGame();
+  }
+
+  reset() {
+    this.clearBoard();
   }
 
   sendCommand(command: Command) {
@@ -70,9 +80,15 @@ class Game {
   }
 
   private gameStateLoop() {
-    setTimeout(() => {
+    this.nextStateUpdateHandle = setTimeout(() => {
       this.updateGameState();
-      this.gameStateLoop();
+
+      if (this.state.board.isFull()) {
+        this.stop();
+      } else {
+        this.gameStateLoop();
+      }
+
     }, this.state.activeBlock.speed);
   }
 
@@ -85,11 +101,9 @@ class Game {
     this.addActiveBlockToBoard();
     this.removeFullRowsFromBoard();
 
-    if (this.state.board.isFull()) {
-      this.clearBoard();
+    if (!this.state.board.isFull()) {
+      this.addNewActiveBlock();
     }
-
-    this.addNewActiveBlock();
   }
 
   private addActiveBlockToBoard() {
@@ -116,4 +130,8 @@ class Game {
   }
 }
 
-export {Game};
+const game = new Game(15, 24);
+export {
+  game,
+  Game
+};

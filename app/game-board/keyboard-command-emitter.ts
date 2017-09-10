@@ -1,35 +1,32 @@
 import {Command, CommandEmitter} from "../domain/command";
-import {Observable, Subject} from "@reactivex/rxjs";
-import * as Rx from 'rx-dom';
+import {Observable} from "@reactivex/rxjs";
+import {FromEventObservable} from "@reactivex/rxjs/dist/cjs/observable/FromEventObservable";
 
 class KeyboardCommandEmitter implements CommandEmitter {
 
-  private readonly subject: Subject<Command>;
+  private readonly observable: Observable<Command>;
 
-  constructor() {
-    this.subject = new Subject();
+  constructor(element: HTMLElement) {
+    this.observable = new FromEventObservable<KeyboardEvent>(element, 'keydown')
+      .concatMap(event => {
+        switch (event.code) {
+          case 'ArrowLeft':
+            return Observable.of(Command.MoveLeft);
+          case 'ArrowRight':
+            return Observable.of(Command.MoveRight);
+          case 'ArrowDown':
+            return Observable.of(Command.Drop);
+          case 'Space':
+            return Observable.of(Command.RotateClockwise);
+        }
 
-    Rx.DOM.keydown(document.documentElement).subscribe((event) => {
-      switch (event.code) {
-        case 'ArrowLeft':
-          this.subject.next(Command.MoveLeft);
-          break;
-        case 'ArrowRight':
-          this.subject.next(Command.MoveRight);
-          break;
-        case 'ArrowDown':
-          this.subject.next(Command.Drop);
-          break;
-        case 'Space':
-          this.subject.next(Command.RotateClockwise);
-          break;
+        return Observable.empty();
+      });
 
-      }
-    })
   }
 
   get command$(): Observable<Command> {
-    return this.subject.asObservable();
+    return this.observable;
   }
 
 }

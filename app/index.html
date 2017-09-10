@@ -38,47 +38,27 @@
             right: 0;
         }
 
-        .game-name {
+        h1 {
             font-size: 60px;
             color: #f3f3f3;
             margin-bottom: 25px;
+            margin-top: 0;
         }
 
-        .btn {
-            background: #373737;
+        h2 {
+            font-size: 40px;
             color: #f3f3f3;
-            border: 1px solid #f3f3f3;
-            font-size: 20px;
-            padding: 15px 35px;
+            margin-bottom: 17px;
+            margin-top: 0;
         }
     </style>
 
 </head>
-<body>
-    <div id="splash-screen" class="splash-screen">
-        <div class="game-name">TETRIS</div>
-        <button id="game-start-btn" class="btn">START</button>
-    </div>
-    <div id="game-screen" style="display: none">
-        <div class="main-container">
-            <div class="game-board-container">
-                <canvas id="gameCanvas" class="game-board"></canvas>
-                <div class="current-score">
-                    SCORE: <span id="currentScore"></span>
-                </div>
-            </div>
-            <div class="side-container">
-                <div class="next-block-container">
-                    <canvas id="nextBlockPreviewCanvas" width="70" height="70"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="controls-container">
-            <div class="control-btn" command="MoveLeft"></div>
-            <div class="control-btn" command="RotateClockwise"></div>
-            <div class="control-btn" command="Drop"></div>
-            <div class="control-btn" command="MoveRight"></div>
-        </div>
-    </div>
+<body id="view-container">
+
+<div class="splash-screen">
+    <h1>TETRIS</h1>
+</div>
+
 </body>
 </html>
