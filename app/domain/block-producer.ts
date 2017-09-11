@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import {Block, BlockGeometries} from "./block";
 import {BehaviorSubject, Observable, Subject} from "@reactivex/rxjs";
-import {Color} from "../color";
+import {Color} from "../utils/color";
 
 const BLOCK_COLORS: Color[] = [
   Color.BLOCK_1,

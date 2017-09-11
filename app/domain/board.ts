@@ -1,7 +1,7 @@
 import {Block} from "./block";
 import {Position} from "./position";
 import * as _ from "lodash";
-import {Color} from "../color";
+import {Color} from "../utils/color";
 import {Pixel} from "./pixel";
 
 class Board {

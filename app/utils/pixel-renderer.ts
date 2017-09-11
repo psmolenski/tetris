@@ -1,7 +1,7 @@
-import {Canvas} from "../canvas";
+import {Canvas} from "./canvas";
 import {Pixel} from "../domain/pixel";
 import {Position} from "../domain/position";
-import {Color} from "../color";
+import {Color} from "./color";
 
 class PixelRenderer {
   constructor(private readonly canvas: Canvas){}

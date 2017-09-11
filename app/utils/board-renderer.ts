@@ -1,4 +1,4 @@
-import {Canvas} from "../canvas";
+import {Canvas} from "./canvas";
 import {Board} from "../domain/board";
 import {PixelPosition, PixelRenderer} from "./pixel-renderer";
 import {Position} from "../domain/position";

@@ -1,4 +1,4 @@
-import {Color} from "../color";
+import {Color} from "../utils/color";
 
 let size = 15;
 let strokeColor = Color.BOARD;
