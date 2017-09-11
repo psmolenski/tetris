@@ -1,6 +1,6 @@
 import {router} from "./router";
 
-import './styles/main.less';
+import './main.less';
 import {SplashScreenController} from "./views/splash-screen/splash-screen.controller";
 import {GameScreenController} from "./views/game-screen/game-screen.controller";
 import {GameEndScreenController} from "./views/game-end-screen/game-end-screen.controller";
