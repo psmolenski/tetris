@@ -1,4 +1,4 @@
-import {Router} from "../../ui/router";
+import {Router} from "../../router";
 import template from "./splash-screen.template.html";
 
 

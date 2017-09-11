@@ -1,4 +1,4 @@
-import {Game} from "../domain/game";
+import {Game} from "../../domain/game";
 import * as _ from "lodash";
 
 class CurrentScoreController {

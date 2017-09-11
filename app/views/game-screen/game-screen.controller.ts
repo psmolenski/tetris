@@ -1,13 +1,13 @@
-import {NextBlockPreviewController} from "../../next-block-preview/next-block-preview.controller";
-import {CurrentScoreController} from "../../current-score/current-score.controller";
-import {GameBoardController} from "../../game-board/game-board.controller";
+import {NextBlockPreviewController} from "../../components/next-block-preview/next-block-preview.controller";
+import {CurrentScoreController} from "../../components/current-score/current-score.controller";
+import {GameBoardController} from "../../components/game-board/game-board.controller";
 import {game} from "../../domain/game";
 import template from "./game-screen.template.html";
 import {Observable, Subscription} from "@reactivex/rxjs";
 import {CommandEmitter} from "../../domain/command";
-import {KeyboardCommandEmitter} from "../../game-board/keyboard-command-emitter";
-import {ButtonsCommandEmitter} from "../../game-board/buttons-command-emitter";
-import {Router} from "../../ui/router";
+import {KeyboardCommandEmitter} from "../../components/game-board/keyboard-command-emitter";
+import {ButtonsCommandEmitter} from "../../components/game-board/buttons-command-emitter";
+import {Router} from "../../router";
 import {GameState} from "../../domain/game-state";
 
 class GameScreenController {

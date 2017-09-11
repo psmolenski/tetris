@@ -1,4 +1,4 @@
-import {router} from "./ui/router";
+import {router} from "./router";
 
 import './styles/main.less';
 import {SplashScreenController} from "./views/splash-screen/splash-screen.controller";

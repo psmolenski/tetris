@@ -1,9 +1,9 @@
-import {Color} from "../color";
-import {GameState} from "../domain/game-state";
-import {Canvas} from "../canvas";
-import {BlockRenderer} from "../ui/block-renderer";
-import {BoardRenderer} from "../ui/board-renderer";
-import {PixelPosition} from "../ui/pixel-renderer";
+import {Color} from "../../color";
+import {GameState} from "../../domain/game-state";
+import {Canvas} from "../../canvas";
+import {BlockRenderer} from "../../ui/block-renderer";
+import {BoardRenderer} from "../../ui/board-renderer";
+import {PixelPosition} from "../../ui/pixel-renderer";
 
 class GameBoardRenderer {
   private readonly canvas: Canvas;

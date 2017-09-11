@@ -1,5 +1,5 @@
 import {NextBlockPreviewRenderer} from "./next-block-preview.renderer";
-import {Game} from "../domain/game";
+import {Game} from "../../domain/game";
 
 class NextBlockPreviewController {
   private readonly game : Game;

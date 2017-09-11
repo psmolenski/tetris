@@ -1,5 +1,5 @@
 import {game} from "../../domain/game";
-import {Router} from "../../ui/router";
+import {Router} from "../../router";
 import template from './game-end-screen.template.html';
 import {FromEventObservable} from "@reactivex/rxjs/dist/cjs/observable/FromEventObservable";
 

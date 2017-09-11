@@ -1,9 +1,9 @@
-import {Block} from "../domain/block";
-import {Canvas} from "../canvas";
-import {Color} from "../color";
-import {Position} from "../domain/position";
-import {Pixel} from "../domain/pixel";
-import {BlockRenderer} from "../ui/block-renderer";
+import {Block} from "../../domain/block";
+import {Canvas} from "../../canvas";
+import {Color} from "../../color";
+import {Position} from "../../domain/position";
+import {Pixel} from "../../domain/pixel";
+import {BlockRenderer} from "../../ui/block-renderer";
 
 class NextBlockPreviewRenderer {
   private readonly canvas: Canvas;

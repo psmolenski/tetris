@@ -1,28 +1,34 @@
-import {Command, CommandEmitter} from "../domain/command";
+import {Command, CommandEmitter} from "../../domain/command";
 import {Observable} from "@reactivex/rxjs";
 import {FromEventObservable} from "@reactivex/rxjs/dist/cjs/observable/FromEventObservable";
 
-class KeyboardCommandEmitter implements CommandEmitter {
+class ButtonsCommandEmitter implements CommandEmitter {
 
   private readonly observable: Observable<Command>;
 
   constructor(element: HTMLElement) {
-    this.observable = new FromEventObservable<KeyboardEvent>(element, 'keydown')
+
+    const buttons = element.querySelectorAll('.control-btn');
+
+    this.observable = new FromEventObservable<MouseEvent>(buttons, 'click')
       .concatMap(event => {
-        switch (event.code) {
-          case 'ArrowLeft':
+        const target = <HTMLElement> event.target;
+        const command = target.getAttribute('command');
+
+
+        switch (command) {
+          case 'MoveLeft':
             return Observable.of(Command.MoveLeft);
-          case 'ArrowRight':
+          case 'MoveRight':
             return Observable.of(Command.MoveRight);
-          case 'ArrowDown':
+          case 'Drop':
             return Observable.of(Command.Drop);
-          case 'Space':
+          case 'RotateClockwise':
             return Observable.of(Command.RotateClockwise);
         }
 
         return Observable.empty();
       });
-
   }
 
   get command$(): Observable<Command> {
@@ -31,4 +37,4 @@ class KeyboardCommandEmitter implements CommandEmitter {
 
 }
 
-export {KeyboardCommandEmitter};
+export {ButtonsCommandEmitter};

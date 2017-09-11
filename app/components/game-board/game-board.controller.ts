@@ -1,6 +1,6 @@
 import {GameBoardRenderer} from "./game-board.renderer";
-import {Game} from "../domain/game";
-import {Pixel} from "../domain/pixel";
+import {Game} from "../../domain/game";
+import {Pixel} from "../../domain/pixel";
 
 class GameBoardController {
   private readonly game: Game;
